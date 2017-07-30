@@ -1,0 +1,26 @@
+---
+title: "608project"
+output: word_document
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+library(data.table)
+artistdata <- read.csv("artists_listeners_playcount.csv")
+artdata <- data.table(artistdata)
+artdata <-artdata[ listeners>0, ,]
+brks1 <- seq(0, 5200000, length=521)
+artdata[,bin:=findInterval(listeners, brks1)]
+dt1 <- artdata[, list(.N, m=mean(listeners)), by=bin]
+ggplot(dt1,aes(x= m, y = N))+ geom_line()+labs(x="Listener",y="Count")
+ggplot(dt1,aes(x= log(m), y = log(N)))+ geom_line()+labs(x="log(Listener)",y="log(Count)")
+artdata <- data.table(artistdata)
+artdata <-artdata[ listeners>0, ,]
+
+brks2 <- seq(0, 457000000, length=458)
+artdata[,bin:=findInterval(playcount, brks2)]
+dt2 <- artdata[, list(.N, m=mean(playcount)), by=bin]
+ggplot(dt2,aes(x= m, y = N))+ geom_line()+labs(x="Playcount",y="Count")
+ggplot(dt2,aes(x= log(m), y = log(N)))+ geom_line()+labs(x="log(Playcount)",y="log(Count)")
+```
